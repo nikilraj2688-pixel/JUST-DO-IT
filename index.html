@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minimalist Tasks | Cloud Powered</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Decorative animated background orbs -->
+  <div class="bg-shape shape-1" aria-hidden="true"></div>
+  <div class="bg-shape shape-2" aria-hidden="true"></div>
+  <div class="bg-shape shape-3" aria-hidden="true"></div>
+
+  <!-- Authentication Card (Displayed when signed out) -->
+  <div id="auth-container" class="app-container auth-view hidden">
+    <header class="app-header text-center">
+      <h1 class="app-title">Welcome to Tasks</h1>
+      <p class="app-subtitle">Sign in to sync your personal tasks to the cloud.</p>
+    </header>
+
+    <div class="card glass-card">
+      <div class="auth-tabs" role="tablist">
+        <button type="button" id="tab-login" class="auth-tab active" role="tab" aria-selected="true">Sign In</button>
+        <button type="button" id="tab-register" class="auth-tab" role="tab" aria-selected="false">Sign Up</button>
+      </div>
+
+      <form id="auth-form" class="auth-form" novalidate>
+        <div class="form-group">
+          <label for="auth-email" class="form-label">Email address</label>
+          <input 
+            type="email" 
+            id="auth-email" 
+            class="task-input" 
+            placeholder="you@example.com" 
+            autocomplete="email" 
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="auth-password" class="form-label">Password</label>
+          <input 
+            type="password" 
+            id="auth-password" 
+            class="task-input" 
+            placeholder="••••••••" 
+            autocomplete="current-password" 
+            required
+          >
+        </div>
+
+        <p id="auth-error" class="input-error hidden" role="alert" aria-live="assertive"></p>
+
+        <button type="submit" id="auth-submit-btn" class="btn btn-primary btn-block">
+          <span>Sign In</span>
+        </button>
+
+        <div class="auth-divider">
+          <span>or</span>
+        </div>
+
+        <button type="button" id="auth-anon-btn" class="btn btn-secondary btn-block">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <span>Continue Anonymously</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Main Application Container (Displayed when authenticated) -->
+  <div id="todo-container" class="app-container todo-view hidden">
+    <header class="app-header">
+      <div class="header-top">
+        <div class="header-branding">
+          <h1 class="app-title">Tasks</h1>
+          <p class="app-subtitle">Focus on what matters today.</p>
+        </div>
+        <div class="header-user-section">
+          <div id="sync-status" class="sync-badge status-idle" aria-live="polite">
+            <span class="status-dot"></span>
+            <span class="status-text">Synced</span>
+          </div>
+          <button type="button" id="btn-logout" class="btn btn-logout-text">
+            <span>Sign out</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="card glass-card">
+      <!-- Task Creation Form -->
+      <form id="task-form" class="task-form" novalidate>
+        <div class="input-wrapper">
+          <label for="task-input" class="sr-only">Add a new task</label>
+          <input 
+            type="text" 
+            id="task-input" 
+            class="task-input" 
+            placeholder="What needs to be done?" 
+            autocomplete="off"
+            aria-describedby="input-error"
+          >
+          <button type="submit" id="add-btn" class="btn btn-primary">
+            <span>Add</span>
+            <svg class="btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+        </div>
+        <p id="input-error" class="input-error hidden" role="alert" aria-live="assertive"></p>
+      </form>
+
+      <!-- Filter Controls & Counter -->
+      <div class="controls-bar">
+        <div id="filter-group" class="filter-group" role="group" aria-label="Filter tasks">
+          <button type="button" class="filter-btn active" data-filter="all">All</button>
+          <button type="button" class="filter-btn" data-filter="active">Active</button>
+          <button type="button" class="filter-btn" data-filter="completed">Completed</button>
+        </div>
+        <div class="controls-right">
+          <div id="task-counter" class="task-counter" aria-live="polite">0 items left</div>
+          <button type="button" id="clear-completed-btn" class="btn-text btn-clear-completed hidden">
+            Clear completed
+          </button>
+        </div>
+      </div>
+
+      <!-- Unified Task List (All, Active, or Completed with Add/Completed Timestamps) -->
+      <section class="task-section" aria-label="Tasks List">
+        <ul id="task-list" class="task-list" role="list">
+          <!-- Dynamically populated via DOM manipulation in script.js -->
+        </ul>
+        <div id="empty-state" class="empty-state hidden">
+          <div class="empty-icon">🌱</div>
+          <p class="empty-text">No tasks found.</p>
+        </div>
+      </section>
+    </main>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container" aria-live="assertive" aria-atomic="true"></div>
+  </div>
+
+  <!-- ES Module Scripts -->
+  <script type="module" src="script.js"></script>
+</body>
+</html>
